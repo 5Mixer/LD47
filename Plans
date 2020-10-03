@@ -10,12 +10,13 @@
 # Stages
  - Single car driving - Done
  - Single car driving on loop - Done
- - Race track
- - Multiple cars racing
+ - Race track - Done
+ - Multiple cars racing - Done
  - Upload race to server and download other races - Done
- - Multiple tracks
+ - Multiple tracks - Done
  - Garage and market
 
  # Todo
- - Auth/identity?
+ - Auth/identity? - Ask for nickname and store session identifier in local storage
  - Enter/leave race track mode
+ - Realtime mode
