@@ -8,12 +8,20 @@ import kha.System;
 class Main {
 	var car:Car;
 	var camera:Camera;
+	var input:Input;
+	var lastTime:Float;
 	public function new() {
 		car = new Car();
 		camera = new Camera();
+		input = new Input(camera);
+		lastTime = Scheduler.realTime();
 	}
 	function update(): Void {
-
+		var delta = Scheduler.realTime() - lastTime;
+		car.update(delta);
+		car.driveTo(input.getMouseWorldPosition());
+		car.boosting = input.leftMouseButtonDown;
+		lastTime = Scheduler.realTime();
 	}
 
 	function render(framebuffer: Framebuffer): Void {
