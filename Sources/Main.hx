@@ -4,7 +4,6 @@ import kha.network.HttpMethod;
 import haxe.Json;
 import kha.network.Http;
 import differ.sat.SAT2D;
-import js.html.EffectTiming;
 import kha.math.Vector2;
 import kha.Assets;
 import kha.Framebuffer;
@@ -34,7 +33,7 @@ class Main {
 		}
 		lastTime = Scheduler.realTime();
 
-		Http.request("localhost", "races", null, 3000, false, HttpMethod.Get, null, function (error, response, body){
+		Http.request("localhost", "races", null, 3000, false, HttpMethod.Get, [], function (error, response, body){
 			if (error == 1 || response == 0 || body == null) {
 				trace("Error reaching server! No races loaded.");
 				return;
@@ -80,7 +79,6 @@ class Main {
 		var touchingFlag = (SAT2D.testPolygonVsPolygon(car.getCollider(), flags.getCollider()) != null);
 		if (touchingFlag && !wasOnFlag) {
 			var frames = car.recording.stopRecording();
-			trace(frames);
 			var newCar = new RecordCar(frames);
 			cars.push(newCar);
 
