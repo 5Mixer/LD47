@@ -89,14 +89,17 @@ class Main {
 			car.update(delta);
 
 		for (piece in gold)
-			if (piece.getCollider().testPolygon(car.getCollider()) != null){
-				gold.remove(piece);
-			}
-		for (car in cars)
-			for (piece in gold)
+			if (piece.active)
 				if (piece.getCollider().testPolygon(car.getCollider()) != null){
-					gold.remove(piece);
+					piece.collect();
 				}
+
+		for (piece in gold)
+			if (piece.active)
+				for (car in cars)
+					if (piece.getCollider().testPolygon(car.getCollider()) != null){
+						piece.collect();
+					}
 
 		lastTime = Scheduler.realTime();
 
