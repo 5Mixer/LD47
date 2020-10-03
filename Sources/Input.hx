@@ -37,7 +37,6 @@ class Input {
     function onMouseUp(button:Int, x:Int, y:Int) {
         mousePosition.x = x;
         mousePosition.y = y;
-        trace(button);
         
         if (button == 0)
             leftMouseButtonDown = false;

@@ -1,5 +1,6 @@
 package;
 
+import js.html.EffectTiming;
 import kha.math.Vector2;
 import kha.Assets;
 import kha.Framebuffer;
@@ -8,11 +9,13 @@ import kha.System;
 
 class Main {
 	var car:Car;
+	var flags:LapFlags;
 	var camera:Camera;
 	var input:Input;
 	var lastTime:Float;
 	public function new() {
 		car = new Car();
+		flags = new LapFlags();
 		camera = new Camera();
 		input = new Input(camera);
 		input.onRightDown = function() {
@@ -38,7 +41,7 @@ class Main {
 		camera.transform(g);
         g.drawImage(kha.Assets.images.track,0,0);
 		car.render(g);
-		g.drawLine(car.position.x,car.position.y,input.getMouseWorldPosition().x,input.getMouseWorldPosition().y);
+		flags.render(g);
 		camera.reset(g);
 
 		g.end();

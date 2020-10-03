@@ -61,10 +61,7 @@ class Car {
         origin = sliceSize.mult(.5);
 
         g.pushTransformation(g.transformation.multmat(FastMatrix3.translation(position.x , position.y)).multmat(FastMatrix3.rotation(angle-Math.PI)).multmat(FastMatrix3.translation(-position.x - origin.x, -position.y - origin.y)));
-        var slices = Math.floor(kha.Assets.images.car.height/sliceSize.y);
-        for (slice in 0...slices) {
-            g.drawSubImage(kha.Assets.images.car, position.x, position.y, 0, kha.Assets.images.car.height-slice*sliceSize.y, sliceSize.x, sliceSize.y);
-        }
+        g.drawImage(kha.Assets.images.car, position.x, position.y);
         g.popTransformation();
     }
 
