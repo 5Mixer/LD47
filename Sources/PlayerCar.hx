@@ -2,7 +2,6 @@ package ;
 
 import kha.Scheduler;
 import kha.math.Vector2;
-import kha.math.FastMatrix3;
 
 class PlayerCar extends Car {
 
@@ -17,6 +16,8 @@ class PlayerCar extends Car {
 
     public var movementAngle = 0.;
     var slidingFactor = 0.;
+
+    var trackColor:kha.Color;
 
     public var recording:Recording = new Recording();
 
@@ -51,8 +52,22 @@ class PlayerCar extends Car {
             slidingFactor = slidingFactor*.9;
         }
 
+        var col = kha.Assets.images.track.at(Std.int(position.x),Std.int(position.y));
+        var lowerValue = 107;
+        var upperValue = 115;
 
-        var g = kha.Assets.images.track.at(Std.int(position.x),Std.int(position.y)).G;
+        var onTrack = col.Rb > lowerValue && col.Rb < upperValue
+                   && col.Gb > lowerValue && col.Gb < upperValue
+                   && col.Bb > lowerValue && col.Bb < upperValue;
+        if (onTrack) {
+            if (trackColor == null) {
+                trackColor = col;
+            }else if (trackColor != col) {
+                position = new Vector2();
+            }
+        }
+        trace(col + " - "+trackColor);
+
         var movement = new Vector2(Math.cos(movementAngle-Math.PI) * speed * delta, Math.sin(movementAngle-Math.PI) * speed * delta);
         var directMovement = new Vector2(Math.cos(angle-Math.PI) * speed * delta, Math.sin(angle-Math.PI) * speed * delta);
         position = position.add(movement.mult(slidingFactor).add(directMovement.mult(1-slidingFactor)));
