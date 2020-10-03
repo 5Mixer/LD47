@@ -25,7 +25,7 @@ class PlayerCar extends Car {
             if (angle > Math.PI) angle -= 2*Math.PI;
             else if (angle < -Math.PI) angle += 2*Math.PI;
 
-            recording.record(new CarFrame(position.x,position.y, Math.round(angle*180/Math.PI), Math.round(((Scheduler.realTime()-recording.recordingStartTime)*10000))));
+            recording.record(new CarFrame(Math.round(position.x*1000),Math.round(position.y*1000), Math.round(angle*180/Math.PI), Math.round(((Scheduler.realTime()-recording.recordingStartTime)*10000))));
         }
 
         if (accelerating) {

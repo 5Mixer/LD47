@@ -11,6 +11,10 @@ class RecordCar extends Car {
         startLapTime = Scheduler.realTime();
         this.frames = frames;
     }
+    public function asBytes () {
+        var bytes = haxe.io.Bytes.alloc(frames.length*4);
+        
+    }
     override public function update(delta){
 
         if (frames[frameIndex+1].time/10000 < Scheduler.realTime() - startLapTime) {
@@ -27,8 +31,8 @@ class RecordCar extends Car {
 
         var frameProgress = (Scheduler.realTime()-startLapTime-(frame.time/10000))/((nextFrame.time-frame.time)/10000);
 
-        position.x = nextFrame.x*(frameProgress) + frame.x*(1-frameProgress);
-        position.y = nextFrame.y*(frameProgress) + frame.y*(1-frameProgress);
+        position.x = (nextFrame.x*(frameProgress) + frame.x*(1-frameProgress))/1000;
+        position.y = (nextFrame.y*(frameProgress) + frame.y*(1-frameProgress))/1000;
         
 
         var offset = 0;

@@ -1,5 +1,8 @@
 package;
 
+import kha.network.HttpMethod;
+import haxe.Json;
+import kha.network.Http;
 import differ.sat.SAT2D;
 import js.html.EffectTiming;
 import kha.math.Vector2;
@@ -30,6 +33,18 @@ class Main {
 			car.speed += 300;
 		}
 		lastTime = Scheduler.realTime();
+
+		Http.request("localhost", "cars", null, 3000, false, HttpMethod.Get, null, function (error, response, body){
+			if (error == 1 || response == 0 || body == null) {
+				trace("Error reaching server! No cars loaded.");
+				return;
+			}
+		
+			var data:Array<Array<CarFrame>> = haxe.Json.parse(body);
+			for (car in data){
+				cars.push(new RecordCar(car));
+			}
+		});
 	}
 	function update(): Void {
 		var delta = Scheduler.realTime() - lastTime;
@@ -51,6 +66,14 @@ class Main {
 			trace(frames);
 			var newCar = new RecordCar(frames);
 			cars.push(newCar);
+
+			var req = new haxe.Http("http://localhost:3000/cars");
+			req.setPostData(Json.stringify(frames));
+			req.onData = function(s) trace(s);
+			req.onError = function(s) trace(s);
+			req.onStatus = function(s) trace(s);
+
+			req.request(true);
 		}
 		wasOnFlag = touchingFlag;
 	}
