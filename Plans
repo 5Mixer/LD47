@@ -8,10 +8,14 @@
  - Garage UI allows you to buy, repair cars.
 
 # Stages
- - Single car driving
- - Single car driving on loop
+ - Single car driving - Done
+ - Single car driving on loop - Done
  - Race track
  - Multiple cars racing
- - Upload race to server and download other races
+ - Upload race to server and download other races - Done
  - Multiple tracks
  - Garage and market
+
+ # Todo
+ - Auth/identity?
+ - Enter/leave race track mode

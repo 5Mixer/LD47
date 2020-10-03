@@ -7,10 +7,10 @@ import kha.graphics2.Graphics;
 class LapFlags implements Collider {
     public var position:Vector2 = new Vector2();
     public var projection:Vector2 = new Vector2();
-    var angle = 0;
+    var angle = Math.PI/2;
 
-    public function new() {
-        position = new Vector2(0,250);
+    public function new(position:Vector2) {
+        this.position = position;
     }
     public function render(g:Graphics) {
         var origin = new Vector2(kha.Assets.images.flags.width/2, kha.Assets.images.flags.height/2);

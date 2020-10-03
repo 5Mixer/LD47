@@ -52,6 +52,7 @@ class PlayerCar extends Car {
         }
 
 
+        var g = kha.Assets.images.track.at(Std.int(position.x),Std.int(position.y)).G;
         var movement = new Vector2(Math.cos(movementAngle-Math.PI) * speed * delta, Math.sin(movementAngle-Math.PI) * speed * delta);
         var directMovement = new Vector2(Math.cos(angle-Math.PI) * speed * delta, Math.sin(angle-Math.PI) * speed * delta);
         position = position.add(movement.mult(slidingFactor).add(directMovement.mult(1-slidingFactor)));

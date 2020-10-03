@@ -17,12 +17,23 @@ class Main {
 	var camera:Camera;
 	var input:Input;
 	var lastTime:Float;
+	var world:World;
+	var gold:Array<Gold> = [];
+	var raceFlags:Array<LapFlags> = [];
 
 	var wasOnFlag = false;
 
 	public function new() {
 		car = new PlayerCar();
-		flags = new LapFlags();
+		world = new World();
+		flags = new LapFlags(new Vector2());
+
+		for (flagLocation in world.flagLocations)
+			raceFlags.push(new LapFlags(flagLocation));
+		
+		for (goldLocation in world.goldLocations)
+			gold.push(new Gold(goldLocation));
+
 		camera = new Camera();
 		input = new Input(camera);
 		input.onRightDown = function() {
@@ -71,6 +82,8 @@ class Main {
 
 		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
 
+		for (piece in gold)
+			piece.update(delta);
 		for (car in cars)
 			car.update(delta);
 
@@ -99,8 +112,14 @@ class Main {
 		camera.transform(g);
         g.drawImage(kha.Assets.images.track,0,0);
 		car.render(g);
+
+		for (piece in gold)
+			piece.render(g);
 		for (car in cars)
 			car.render(g);
+		for (flag in raceFlags)
+			flag.render(g);
+
 		flags.render(g);
 		camera.reset(g);
 
