@@ -15,6 +15,9 @@ class Main {
 		car = new Car();
 		camera = new Camera();
 		input = new Input(camera);
+		input.onRightDown = function() {
+			car.movementAngle = car.angle;
+		}
 		lastTime = Scheduler.realTime();
 	}
 	function update(): Void {
@@ -22,6 +25,7 @@ class Main {
 		car.update(delta);
 		car.driveTo(input.getMouseWorldPosition());
 		car.boosting = input.leftMouseButtonDown;
+		car.sliding = input.rightMouseButtonDown;
 
 		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
 

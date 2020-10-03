@@ -11,6 +11,7 @@ class Input {
     public var leftMouseButtonDown = false;
     public var middleMouseButtonDown = false;
     public var rightMouseButtonDown = false;
+    public var onRightDown:()->Void;
 
     public function new(camera) {
         this.camera = camera;
@@ -26,21 +27,24 @@ class Input {
         
         if (button == 0)
             leftMouseButtonDown = true;
-        if (button == 1)
+        if (button == 1){
             rightMouseButtonDown = true;
+            onRightDown();
+        }
         if (button == 2)
             middleMouseButtonDown = true;
     }
     function onMouseUp(button:Int, x:Int, y:Int) {
         mousePosition.x = x;
         mousePosition.y = y;
+        trace(button);
         
         if (button == 0)
             leftMouseButtonDown = false;
         if (button == 1)
-            middleMouseButtonDown = false;
-        if (button == 2)
             rightMouseButtonDown = false;
+        if (button == 2)
+            middleMouseButtonDown = false;
     }
     function onMouseMove(x:Int, y:Int, dx:Int, dy:Int) {
         mousePosition.x = x;
