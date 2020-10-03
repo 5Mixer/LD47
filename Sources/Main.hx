@@ -1,5 +1,6 @@
 package;
 
+import kha.math.Vector2;
 import kha.Assets;
 import kha.Framebuffer;
 import kha.Scheduler;
@@ -21,6 +22,9 @@ class Main {
 		car.update(delta);
 		car.driveTo(input.getMouseWorldPosition());
 		car.boosting = input.leftMouseButtonDown;
+
+		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
+
 		lastTime = Scheduler.realTime();
 	}
 
@@ -28,7 +32,9 @@ class Main {
 		var g = framebuffer.g2;
 		g.begin(kha.Color.fromBytes(84, 214, 118));
 		camera.transform(g);
+        g.drawImage(kha.Assets.images.track,0,0);
 		car.render(g);
+		g.drawLine(car.position.x,car.position.y,input.getMouseWorldPosition().x,input.getMouseWorldPosition().y);
 		camera.reset(g);
 
 		g.end();

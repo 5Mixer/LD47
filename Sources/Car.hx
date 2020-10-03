@@ -5,7 +5,7 @@ import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 
 class Car {
-    var position:Vector2 = new Vector2();
+    public var position:Vector2 = new Vector2();
     var origin:Vector2;
     var angle:Float;
 
@@ -13,7 +13,7 @@ class Car {
     var acceleration = 1;
     var deceleration = 1;
     var minSpeed = 10.;
-    var maxSpeed = 200.;
+    var maxSpeed = 140.;
     var maxAngleDelta = 5*Math.PI/180;
     public var boosting = false;
 
@@ -29,6 +29,8 @@ class Car {
         }
         speed = Math.min(maxSpeed, Math.max(minSpeed, speed));
 
+        maxAngleDelta = (5*Math.PI/180) - (speed/maxSpeed) * (2 * Math.PI/180);
+
         var movement = new Vector2(Math.cos(angle-Math.PI) * speed * delta, Math.sin(angle-Math.PI) * speed * delta);
         position = position.add(movement);
     }
@@ -37,7 +39,7 @@ class Car {
         var sliceSize:Vector2 = new Vector2(9, 6);
         origin = sliceSize.mult(.5);
 
-        g.pushTransformation(g.transformation.multmat(FastMatrix3.translation(position.x + origin.x, position.y + origin.y)).multmat(FastMatrix3.rotation(angle-Math.PI)).multmat(FastMatrix3.translation(-position.x - origin.x, -position.y - origin.y)));
+        g.pushTransformation(g.transformation.multmat(FastMatrix3.translation(position.x , position.y)).multmat(FastMatrix3.rotation(angle-Math.PI)).multmat(FastMatrix3.translation(-position.x - origin.x, -position.y - origin.y)));
         var slices = Math.floor(kha.Assets.images.car.height/sliceSize.y);
         for (slice in 0...slices) {
             g.drawSubImage(kha.Assets.images.car, position.x, position.y, 0, kha.Assets.images.car.height-slice*sliceSize.y, sliceSize.x, sliceSize.y);
@@ -53,10 +55,11 @@ class Car {
         if (angleDelta > Math.PI) angle += 2*Math.PI;
         else if (angleDelta < -Math.PI) angle -= 2*Math.PI;
 
-        if (Math.abs(angleDelta) > maxAngleDelta) {
-            angle += maxAngleDelta * (angleDelta > 0 ? 1 : -1);
-        }else{
-            angle += angleDelta;
-        }
+        // if (Math.abs(angleDelta) > maxAngleDelta) {
+            // angle += maxAngleDelta * (angleDelta > 0 ? 1 : -1);
+            angle = (angle*.9 + targetAngle*.1);
+        // }else{
+        //     angle += angleDelta;
+        // }
     }
 }
