@@ -11,10 +11,6 @@ class RecordCar extends Car {
         startLapTime = Scheduler.realTime();
         this.frames = frames;
     }
-    public function asBytes () {
-        var bytes = haxe.io.Bytes.alloc(frames.length*4);
-        
-    }
     override public function update(delta){
 
         if (frames[frameIndex+1].time/10000 < Scheduler.realTime() - startLapTime) {

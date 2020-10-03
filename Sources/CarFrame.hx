@@ -1,8 +1,8 @@
 package ;
 
 class CarFrame {
-    public var x:Float;
-    public var y:Float;
+    public var x:Int;
+    public var y:Int;
     public var angle:Int;
     public var time:Int;
     public function new (x,y,a,t) {

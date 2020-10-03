@@ -12,6 +12,19 @@ class Recording {
     public function new() {
         recordingStartTime = kha.Scheduler.realTime();
     }
+    public function asBytes () {
+        var bytes = haxe.io.Bytes.alloc(frames.length*4*4);
+        var i = 0;
+        var frameSize = 4 + 4 + 4 + 4;
+        for (frame in frames) {
+            bytes.setInt32(i*frameSize, frame.x);
+            bytes.setInt32(i*frameSize+4, frame.y);
+            bytes.setInt32(i*frameSize+8, frame.angle);
+            bytes.setInt32(i*frameSize+12, frame.time);
+            i++;
+        }
+        return bytes;
+    }
 
     public function startRecording() {
         frames = [];

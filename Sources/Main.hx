@@ -34,15 +34,32 @@ class Main {
 		}
 		lastTime = Scheduler.realTime();
 
-		Http.request("localhost", "cars", null, 3000, false, HttpMethod.Get, null, function (error, response, body){
+		Http.request("localhost", "races", null, 3000, false, HttpMethod.Get, null, function (error, response, body){
 			if (error == 1 || response == 0 || body == null) {
-				trace("Error reaching server! No cars loaded.");
+				trace("Error reaching server! No races loaded.");
 				return;
 			}
-		
-			var data:Array<Array<CarFrame>> = haxe.Json.parse(body);
-			for (car in data){
-				cars.push(new RecordCar(car));
+			var races:Array<{
+				id:String
+			}> = haxe.Json.parse(body);
+
+			for (race in races){
+				var req = new haxe.Http("http://localhost:3000/race/"+race.id);
+				req.onBytes = function(data) {
+					var frames = [];
+					var frameSize = 4+4+4+4;
+					for (i in 0...Std.int(data.length/frameSize)) {
+						frames.push(new CarFrame(data.getInt32(i*frameSize), data.getInt32(i*frameSize+4), data.getInt32(i*frameSize+8), data.getInt32(i*frameSize+12)));
+					}
+					cars.push(new RecordCar(frames));
+				};
+				req.onError = function(s) trace(s);
+				req.onStatus = function(s) {
+					trace("Request for race " + race.id + " returned status "+s);
+				}
+
+				req.request();
+
 			}
 		});
 	}
@@ -68,7 +85,7 @@ class Main {
 			cars.push(newCar);
 
 			var req = new haxe.Http("http://localhost:3000/cars");
-			req.setPostData(Json.stringify(frames));
+			req.setPostBytes(car.recording.asBytes());
 			req.onData = function(s) trace(s);
 			req.onError = function(s) trace(s);
 			req.onStatus = function(s) trace(s);
