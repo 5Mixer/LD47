@@ -9,13 +9,13 @@ class Car {
     var origin:Vector2;
     public var angle:Float;
 
-    var speed = 1.;
+    public var speed = 1.;
     var acceleration = 1;
     var deceleration = 1;
     var minSpeed = 10.;
     var maxSpeed = 140.;
     var maxAngleDelta = 5*Math.PI/180;
-    public var boosting = false;
+    public var accelerating = false;
     public var sliding = false;
 
     public var movementAngle = 0.;
@@ -26,19 +26,18 @@ class Car {
     }
 
     public function update(delta:Float) {
-        if (boosting) {
+        if (accelerating) {
             speed += acceleration;
         }else{
             speed -= deceleration;
         }
-        speed = Math.min(maxSpeed, Math.max(minSpeed, speed));
+        speed = Math.max(minSpeed, speed);
+        if (speed > maxSpeed) {
+            speed = speed *.95 + maxSpeed * .05;
+        }
 
         maxAngleDelta = (5*Math.PI/180) - (speed/maxSpeed) * (2 * Math.PI/180);
 
-        // slidingFactor = slidingFactor * .9 + (sliding ? 1 : 0) * .1;
-        // if (!sliding) {
-        //     movementAngle = angle;
-        // }
         if (sliding) {
             slidingFactor = 1;
         
@@ -73,11 +72,6 @@ class Car {
         if (angleDelta > Math.PI) angle += 2*Math.PI;
         else if (angleDelta < -Math.PI) angle -= 2*Math.PI;
 
-        // if (Math.abs(angleDelta) > maxAngleDelta) {
-            // angle += maxAngleDelta * (angleDelta > 0 ? 1 : -1);
-            angle = (angle*.9 + targetAngle*.1);
-        // }else{
-        //     angle += angleDelta;
-        // }
+        angle = (angle*.9 + targetAngle*.1);
     }
 }

@@ -21,13 +21,16 @@ class Main {
 		input.onRightDown = function() {
 			car.movementAngle = car.angle;
 		}
+		input.onRightUp = function() {
+			car.speed += 300;
+		}
 		lastTime = Scheduler.realTime();
 	}
 	function update(): Void {
 		var delta = Scheduler.realTime() - lastTime;
 		car.update(delta);
 		car.driveTo(input.getMouseWorldPosition());
-		car.boosting = input.leftMouseButtonDown;
+		car.accelerating = input.leftMouseButtonDown;
 		car.sliding = input.rightMouseButtonDown;
 
 		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));

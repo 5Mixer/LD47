@@ -12,6 +12,7 @@ class Input {
     public var middleMouseButtonDown = false;
     public var rightMouseButtonDown = false;
     public var onRightDown:()->Void;
+    public var onRightUp:()->Void;
 
     public function new(camera) {
         this.camera = camera;
@@ -40,8 +41,10 @@ class Input {
         
         if (button == 0)
             leftMouseButtonDown = false;
-        if (button == 1)
+        if (button == 1) {
             rightMouseButtonDown = false;
+            onRightUp();
+        }
         if (button == 2)
             middleMouseButtonDown = false;
     }
