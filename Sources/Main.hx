@@ -137,7 +137,12 @@ class Main {
 
 		for (lap in world.lapPolygons)
 			if (SAT2D.testCircleVsPolygon(new Circle(input.getMouseWorldPosition().x, input.getMouseWorldPosition().y,1),lap.polygon) != null){
-				g.drawImage(kha.Assets.images.lap, lap.point.x-kha.Assets.images.lap.width/2, lap.point.y-kha.Assets.images.lap.height);
+				g.font = kha.Assets.fonts.FredokaOne_Regular;
+				g.fontSize = 35;
+				g.drawImage(kha.Assets.images.trackBubble, lap.point.x-kha.Assets.images.trackBubble.width/2, lap.point.y-kha.Assets.images.trackBubble.height);
+				g.color = kha.Color.Black;
+				g.drawString("Track "+lap.lap, lap.point.x - kha.Assets.images.trackBubble.width/2, lap.point.y - kha.Assets.images.trackBubble.height);
+				g.color = kha.Color.White;
 			}
 
 

@@ -52,13 +52,16 @@ class PlayerCar extends Car {
             slidingFactor = slidingFactor*.9;
         }
 
+        // Use a pixel based check to determine whether the player is on the gray tracks
         var col = kha.Assets.images.track.at(Std.int(position.x),Std.int(position.y));
         var lowerValue = 107;
         var upperValue = 115;
 
-        var onTrack = col.Rb > lowerValue && col.Rb < upperValue
-                   && col.Gb > lowerValue && col.Gb < upperValue
-                   && col.Bb > lowerValue && col.Bb < upperValue;
+        var onTrack = col.Rb >= lowerValue && col.Rb <= upperValue
+                   && col.Gb >= lowerValue && col.Gb <= upperValue
+                   && col.Bb >= lowerValue && col.Bb <= upperValue;
+
+        // If the player is on a track, determine whether they've entered another track
         if (onTrack) {
             if (trackColor == null) {
                 trackColor = col;
@@ -66,7 +69,6 @@ class PlayerCar extends Car {
                 position = new Vector2();
             }
         }
-        trace(col + " - "+trackColor);
 
         var movement = new Vector2(Math.cos(movementAngle-Math.PI) * speed * delta, Math.sin(movementAngle-Math.PI) * speed * delta);
         var directMovement = new Vector2(Math.cos(angle-Math.PI) * speed * delta, Math.sin(angle-Math.PI) * speed * delta);
