@@ -1,0 +1,17 @@
+# Plans
+
+ - 100 tracks, ranging in difficulty (Lower level tracks have threshold for maximum car power)
+ - Entering a race costs a certain amount
+ - Winning a race gives you some money, depending on your place and the race difficulty
+ - Online game - the races that are viewable in the world may come from real players
+ - Cars continuously race but degrade in speed over time - eventually they no longer become profitable (they always follow same path)
+ - Garage UI allows you to buy, repair cars.
+
+# Stages
+ - Single car driving
+ - Single car driving on loop
+ - Race track
+ - Multiple cars racing
+ - Upload race to server and download other races
+ - Multiple tracks
+ - Garage and market

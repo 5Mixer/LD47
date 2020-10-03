@@ -1,5 +1,6 @@
 package;
 
+import differ.sat.SAT2D;
 import js.html.EffectTiming;
 import kha.math.Vector2;
 import kha.Assets;
@@ -8,13 +9,17 @@ import kha.Scheduler;
 import kha.System;
 
 class Main {
-	var car:Car;
+	var car:PlayerCar;
+	var cars:Array<Car> = [];
 	var flags:LapFlags;
 	var camera:Camera;
 	var input:Input;
 	var lastTime:Float;
+
+	var wasOnFlag = false;
+
 	public function new() {
-		car = new Car();
+		car = new PlayerCar();
 		flags = new LapFlags();
 		camera = new Camera();
 		input = new Input(camera);
@@ -35,7 +40,19 @@ class Main {
 
 		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
 
+		for (car in cars)
+			car.update(delta);
+
 		lastTime = Scheduler.realTime();
+
+		var touchingFlag = (SAT2D.testPolygonVsPolygon(car.getCollider(), flags.getCollider()) != null);
+		if (touchingFlag && !wasOnFlag) {
+			var frames = car.recording.stopRecording();
+			trace(frames);
+			var newCar = new RecordCar(frames);
+			cars.push(newCar);
+		}
+		wasOnFlag = touchingFlag;
 	}
 
 	function render(framebuffer: Framebuffer): Void {
@@ -44,6 +61,8 @@ class Main {
 		camera.transform(g);
         g.drawImage(kha.Assets.images.track,0,0);
 		car.render(g);
+		for (car in cars)
+			car.render(g);
 		flags.render(g);
 		camera.reset(g);
 
