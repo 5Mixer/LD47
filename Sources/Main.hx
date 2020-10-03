@@ -1,5 +1,6 @@
 package;
 
+import differ.shapes.Circle;
 import kha.network.HttpMethod;
 import haxe.Json;
 import kha.network.Http;
@@ -87,6 +88,11 @@ class Main {
 		for (car in cars)
 			car.update(delta);
 
+		for (car in cars)
+			for (piece in gold)
+				if (piece.getCollider().testPolygon(car.getCollider()) != null)
+					gold.remove(piece);
+
 		lastTime = Scheduler.realTime();
 
 		var touchingFlag = (SAT2D.testPolygonVsPolygon(car.getCollider(), flags.getCollider()) != null);
@@ -119,6 +125,13 @@ class Main {
 			car.render(g);
 		for (flag in raceFlags)
 			flag.render(g);
+
+
+		for (lap in world.lapPolygons)
+			if (SAT2D.testCircleVsPolygon(new Circle(input.getMouseWorldPosition().x, input.getMouseWorldPosition().y,1),lap.polygon) != null){
+				g.drawImage(kha.Assets.images.lap, lap.point.x-kha.Assets.images.lap.width/2, lap.point.y-kha.Assets.images.lap.height);
+			}
+
 
 		flags.render(g);
 		camera.reset(g);

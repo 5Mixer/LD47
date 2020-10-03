@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="167">
+<map version="1.4" tiledversion="1.4.2" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="32" tileheight="32" infinite="0" nextlayerid="9" nextobjectid="183">
  <layer id="1" name="Tile Layer 1" width="1" height="1">
   <data encoding="csv">
 0
@@ -8,6 +8,104 @@
  <imagelayer id="2" name="Image Layer 1">
   <image source="track.png" width="2915" height="2027"/>
  </imagelayer>
+ <objectgroup id="8" name="laps">
+  <object id="167" x="38.6667" y="174.667">
+   <properties>
+    <property name="lap" value="1"/>
+   </properties>
+   <polygon points="0,0 -1.33333,269.333 401.333,364 682.667,356 756,156 324,-237.333"/>
+  </object>
+  <object id="168" x="730.667" y="208">
+   <properties>
+    <property name="lap" value="2"/>
+   </properties>
+   <polygon points="0,0 78.6667,113.333 510.667,24 536,-272 -2.66667,-190.667"/>
+  </object>
+  <object id="169" x="1318.67" y="221.333">
+   <properties>
+    <property name="lap" value="3"/>
+   </properties>
+   <polygon points="0,0 261.333,161.333 344,142.667 504,4 454.667,-214.667 33.3333,-197.333"/>
+  </object>
+  <object id="170" x="1838.67" y="254.667">
+   <properties>
+    <property name="lap" value="4"/>
+   </properties>
+   <polygon points="0,0 86.6667,120.667 346.667,156 373.333,72 381.333,-193.333 98.6667,-237.333 -12,-129.333"/>
+  </object>
+  <object id="171" x="2236" y="128">
+   <properties>
+    <property name="lap" value="5"/>
+   </properties>
+   <polygon points="0,0 -67.3333,683.333 492,928 592,809.333 614.667,-96 18.6667,-78.6667"/>
+  </object>
+  <object id="172" x="2069.33" y="824">
+   <properties>
+    <property name="lap" value="12"/>
+   </properties>
+   <polygon points="-95,-21 413.333,138.667 780,396 781.576,828.97 747.485,942.242 -457.333,161.333"/>
+  </object>
+  <object id="173" x="1546.67" y="1026.67">
+   <properties>
+    <property name="lap" value="13"/>
+   </properties>
+   <polygon points="68,-21 654,343 758.667,633.333 470.667,814.667 78.6667,725.333 -61.3333,40"/>
+  </object>
+  <object id="174" x="1026.67" y="1117.33">
+   <properties>
+    <property name="lap" value="14"/>
+   </properties>
+   <polygon points="0,0 204,664 436,641.333 565.333,366.667 392,-38.6667 162.667,-92"/>
+  </object>
+  <object id="175" x="637.333" y="1064">
+   <properties>
+    <property name="lap" value="15"/>
+   </properties>
+   <polygon points="0,0 -81.3333,402.667 -37.3333,668 294.667,764 497.333,429.333 378.667,28 166.667,-180"/>
+  </object>
+  <object id="176" x="6.66667" y="1129.33">
+   <properties>
+    <property name="lap" value="16"/>
+   </properties>
+   <polygon points="0,0 -24,826.667 297.333,970.667 521.333,817.333 557.333,520 528,336 282.667,-24 34.6667,-193.333"/>
+  </object>
+  <object id="177" x="50.6667" y="893.333">
+   <properties>
+    <property name="lap" value="9"/>
+   </properties>
+   <polygon points="0,0 444,205.333 573.333,164 692,-32 752,-274.667 617.333,-333.333 314.667,-318.667 108,-240 -13.3333,-100"/>
+  </object>
+  <object id="178" x="860" y="374.667">
+   <properties>
+    <property name="lap" value="8"/>
+   </properties>
+   <polygon points="0,0 -77.3333,169.333 -20,260 118.667,325.333 273.333,209.333 313.333,-1.33333 110.667,-45.3333"/>
+  </object>
+  <object id="179" x="1225.33" y="285.333">
+   <properties>
+    <property name="lap" value="7"/>
+   </properties>
+   <polygon points="0,0 -80,352 22.6667,404 188,410.667 309.333,337.333 396,190.667 399.333,126 88.6667,-54"/>
+  </object>
+  <object id="180" x="1656" y="394.667">
+   <properties>
+    <property name="lap" value="6"/>
+   </properties>
+   <polygon points="-6.66667,-4.66667 -50.6667,216 23.3333,253 265.333,266.667 444,233.333 505.333,126 114,-108"/>
+  </object>
+  <object id="181" x="1349.33" y="753.333">
+   <properties>
+    <property name="lap" value="11"/>
+   </properties>
+   <polygon points="0,0 -36,301.333 77.3333,330.667 684.667,1.66667 208,-129.333"/>
+  </object>
+  <object id="182" x="781.333" y="737.333">
+   <properties>
+    <property name="lap" value="10"/>
+   </properties>
+   <polygon points="0,0 210.667,321.333 537.333,221.333 544,-38.6667 42.6667,-65.3333"/>
+  </object>
+ </objectgroup>
  <objectgroup id="6" name="gold" visible="0">
   <object id="4" x="248.667" y="84">
    <point/>

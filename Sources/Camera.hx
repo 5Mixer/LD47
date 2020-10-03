@@ -20,7 +20,7 @@ class Camera {
 		} else {
 			scale /= amount * zoomSpeed;
 		} 
-		scale = Math.max(0.005, Math.min(5, scale));
+		scale = Math.max(0.5, Math.min(5, scale));
 		var newWorldPos = viewToWorld(screenPoint);
 		position = position.add(worldToView(oldWorldPos).sub(worldToView(newWorldPos)));
 	}
