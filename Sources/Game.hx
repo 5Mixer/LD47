@@ -73,8 +73,8 @@ class Game {
 		}
 		input.onLeftDown = function() {
 			if (!raceMode && !mouseInUI()) {
-				if (getHoveredTrack() != null) {
-					startRace(getHoveredTrack().id);
+				if (getHoveredTrack() != null && ui.carPendingTrackSelection != null) {
+					startRace(getHoveredTrack().id, ui.carPendingTrackSelection);
 				}
 			}
 			if (mouseInUI()) {
@@ -185,11 +185,11 @@ class Game {
 			car.render(g);
 
 		camera.reset(g);
-		if (!raceMode) {
+		if (!raceMode && ui.carPendingTrackSelection != null) {
 			var track = getHoveredTrack();
 			if (track != null) {
-				var bubblePosition = camera.worldToView(track.point).sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
-				// var bubblePosition = input.getMouseScreenPosition().sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
+				// var bubblePosition = camera.worldToView(track.point).sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
+				var bubblePosition = input.getMouseScreenPosition().sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
 				g.font = kha.Assets.fonts.FredokaOne_Regular;
 				g.fontSize = 35;
 				g.drawImage(kha.Assets.images.trackBubble, bubblePosition.x, bubblePosition.y);
@@ -222,11 +222,10 @@ class Game {
 
 		return null;
 	}
-	function startRace(trackId:String) {
+	function startRace(trackId:String, garageCar:CarStats) {
 		raceMode = true;
 		raceTrackId = getHoveredTrack().id;
-		var meta = new CarStats(1,1,1,1,user);
-		car = new PlayerCar(meta);
+		car = new PlayerCar(garageCar);
 		cars.push(car);
 		for (flag in raceFlags) {
 			if (flag.trackId == raceTrackId) {
@@ -241,6 +240,7 @@ class Game {
 		var frames = car.recording.stopRecording();
 		var newCar = new RecordCar(car.meta, frames);
 		cars.push(newCar);
+		cars.remove(car);
 
 		var req = new haxe.Http("http://localhost:3000/cars");
 		req.setPostBytes(car.recording.asBytes());
@@ -252,8 +252,8 @@ class Game {
 
 		raceMode = false;
 		raceTrackId = null;
-		cars.remove(car);
-		car = null;
+		garageCars.remove(ui.carPendingTrackSelection);
+		ui.carPendingTrackSelection = null;
 		trackFlags = null;
 	}
 	function mouseInUI() {

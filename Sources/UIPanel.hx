@@ -8,7 +8,7 @@ import kha.math.Vector2;
 class UIPanel {
     public var buyCar:()->Void;
 
-    public var gold:Int = 1000;
+    public var gold:Int = 10000;
     var user:String;
     var cars:Array<Car> = [];
     var garageCars:Array<CarStats> = [];
@@ -24,7 +24,7 @@ class UIPanel {
     var margin = 20;
     var input:Input;
 
-    var carPendingTrackSelection:CarStats = null;
+    public var carPendingTrackSelection:CarStats = null;
 
     public static var width:Int = 300;
 
@@ -85,7 +85,7 @@ class UIPanel {
 
         var ownedCars = 0;
         // Draw cars
-        var userCars = garageCars;
+        var userCars = garageCars.copy();
         for (car in cars){
             if (car.meta.owner != garageUser) // Only show cars belonging to the player
                 continue;
