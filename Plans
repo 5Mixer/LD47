@@ -20,3 +20,8 @@
  - Auth/identity? - Ask for nickname and store session identifier in local storage
  - Enter/leave race track mode
  - Realtime mode (websockets)
+ - sounds
+
+ # Problems
+ - huge differ allocation?
+ - crazy car movement

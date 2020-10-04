@@ -17,6 +17,7 @@ class PlayerCar extends Car {
     public var recording:Recording = new Recording();
 
     override public function update(delta:Float) {
+        super.update(delta);
         if (angle > Math.PI) angle -= 2*Math.PI;
         else if (angle < -Math.PI) angle += 2*Math.PI;
 

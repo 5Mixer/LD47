@@ -9,7 +9,7 @@ class Main {
 		System.start({title: "LD47 - Car Game", width: 800, height: 600}, function (_) {
 			// Just loading everything is ok for small projects
 			Assets.loadEverything(function () {
-                var user = "@5mixer Here";
+                var user = "@5mixer";
                 var game = new Game(user);
                 var menu = new Menu();
                 menu.onPlay = function(username) {

@@ -12,6 +12,7 @@ class RecordCar extends Car {
         this.frames = frames;
     }
     override public function update(delta){
+        super.update(delta);
 
         if (frames[frameIndex+1].time/10000 < Scheduler.realTime() - startLapTime) {
             frameIndex++;

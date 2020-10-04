@@ -24,6 +24,9 @@ class UIPanel {
     var margin = 20;
     var input:Input;
 
+    var carPendingTrackSelection:CarStats = null;
+    pt
+
     public static var width:Int = 300;
 
     public function new(garageUser, input) {
@@ -114,8 +117,19 @@ class UIPanel {
             g.drawString("Boost", panelPosition.x + margin, y);
             drawStat(g, panelPosition.x + panelSize.x - margin - (8+5)*4, y, car.boost);
             y += g.fontSize + margin;
+            
+            y = drawButton(g, "+Speed", panelPosition.x+margin, y, buyCar);
+            y = drawButton(g, "+Acceleration", panelPosition.x+margin, y, buyCar);
+            y = drawButton(g, "+Boost", panelPosition.x+margin, y, buyCar);
+            y = drawButton(g, carPendingTrackSelection == car ? "Choose track" : "Race Car", panelPosition.x+margin, y, function() {
+                if (carPendingTrackSelection == car) {
+                    carPendingTrackSelection = null; // Cancel track selection
+                }else{
+                    carPendingTrackSelection = car;
+                }
+            });
 
-            y += margin;
+            y += margin * 3;
         }
 
         if (ownedCars < 10) {

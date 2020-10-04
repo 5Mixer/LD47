@@ -30,10 +30,12 @@ class Car implements Collider {
     var maxAngleDelta = 5*Math.PI/180;
 
     public var meta:CarStats;
+    var collider:differ.shapes.Polygon;
 
     public function new(meta) {
         position = new Vector2(50,50);
         this.meta = meta;
+        collider = differ.shapes.Polygon.rectangle(position.x,position.y, 10,10);
     }
     function getMaxSpeed() {
         return 50 + meta.speed * 25;
@@ -46,9 +48,12 @@ class Car implements Collider {
     }
 
     public function getCollider() {
-        return differ.shapes.Polygon.rectangle(position.x,position.y, 10,10);
+        return collider;
     }
-    public function update(delta:Float){}
+    public function update(delta:Float){
+        collider.x = position.x;
+        collider.y = position.y;
+    }
 
     public function render(g:Graphics) {
         var sliceSize:Vector2 = new Vector2(9, 6);

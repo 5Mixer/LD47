@@ -35,12 +35,16 @@ class Game {
 	var ui:UIPanel;
 	var user:String;
 
+	var mouseCollider:differ.shapes.Circle;
+
 	public function new(user) {
 		world = new World();
 		this.user = user;
 
 		camera = new Camera();
 		input = new Input(camera);
+
+		mouseCollider = new differ.shapes.Circle(0,0,1);
 
 		ui = new UIPanel(user,input);
 		ui.setGold(gold);
@@ -127,19 +131,22 @@ class Game {
 	public function update(): Void {
 		var delta = Scheduler.realTime() - lastTime;
 
+		mouseCollider.x = input.getMouseWorldPosition().x;
+		mouseCollider.y = input.getMouseWorldPosition().y;
+
 		var screenSize = new Vector2(kha.Window.get(0).width, kha.Window.get(0).height);
-		camera.position.x = Math.max(0, camera.position.x);
-		camera.position.y = Math.max(-200, camera.position.y); // Hardcode extra space for upper race bubbles
-		camera.position.x = Math.min(kha.Assets.images.track.width*camera.scale-(screenSize.x-UIPanel.width), camera.position.x);
-		camera.position.y = Math.min(kha.Assets.images.track.height*camera.scale-screenSize.y, camera.position.y);
 
 		if (raceMode) {
 			car.driveTo(input.getMouseWorldPosition());
 			car.accelerating = input.leftMouseButtonDown;
 			car.sliding = input.rightMouseButtonDown;
-
 			camera.position = car.position.mult(camera.scale).sub(screenSize.mult(.5));
 		}
+		
+		camera.position.x = Math.max(0, camera.position.x);
+		camera.position.y = Math.max(-200, camera.position.y); // Hardcode extra space for upper race bubbles
+		camera.position.x = Math.min(kha.Assets.images.track.width*camera.scale-(screenSize.x-UIPanel.width), camera.position.x);
+		camera.position.y = Math.min(kha.Assets.images.track.height*camera.scale-screenSize.y, camera.position.y);
 
 		for (piece in goldEntities)
 			piece.update(delta);
@@ -149,9 +156,10 @@ class Game {
 		for (piece in goldEntities)
 			if (piece.active)
 				for (car in cars)
-					if (piece.getCollider().testPolygon(car.getCollider()) != null){
-						piece.collect();
-					}
+					if (Math.abs(car.position.x-piece.position.x)+Math.abs(car.position.y-piece.position.y) < 40) // Quick phase check
+						if (piece.getCollider().testPolygon(car.getCollider()) != null){
+							piece.collect();
+						}
 
 		lastTime = Scheduler.realTime();
 
@@ -202,11 +210,15 @@ class Game {
 		g.end();
 	}
 	function getHoveredTrack() {
-		return getTrackAt(input.getMouseWorldPosition());
+		for (lap in world.lapPolygons)
+			if (mouseCollider.testPolygon(lap.polygon) != null){
+				return lap;
+			}
+		return null;
 	}
 	function getTrackAt(point:Vector2) {
 		for (lap in world.lapPolygons)
-			if (SAT2D.testCircleVsPolygon(new Circle(point.x,point.y,1),lap.polygon) != null){
+			if ((new differ.shapes.Circle(point.x,point.y,1)).testPolygon(lap.polygon) != null){
 				return lap;
 			}
 
