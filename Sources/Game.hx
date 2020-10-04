@@ -40,8 +40,10 @@ class Game {
 		ui.setGold(gold);
 		ui.setUser(user);
 
-		for (flagLocation in world.flagLocations)
+		for (flagLocation in world.flagLocations){
 			raceFlags.push(new LapFlags(flagLocation, getTrackAt(flagLocation).id));
+			getTrackAt(flagLocation).point = flagLocation;
+		}
 		
 		for (goldLocation in world.goldLocations)
 			goldEntities.push(new Gold(goldLocation));
@@ -58,7 +60,7 @@ class Game {
 				car.speed += 300;
 			}
 		}
-		input.onLeftUp = function() {
+		input.onLeftDown = function() {
 			if (!raceMode) {
 				if (getHoveredTrack() != null) {
 					startRace(getHoveredTrack().id);
@@ -106,12 +108,18 @@ class Game {
 	public function update(): Void {
 		var delta = Scheduler.realTime() - lastTime;
 
+		var screenSize = new Vector2(kha.Window.get(0).width, kha.Window.get(0).height);
+		camera.position.x = Math.max(0, camera.position.x);
+		camera.position.y = Math.max(-200, camera.position.y); // Hardcode extra space for upper race bubbles
+		camera.position.x = Math.min(kha.Assets.images.track.width*camera.scale-(screenSize.x-ui.width), camera.position.x);
+		camera.position.y = Math.min(kha.Assets.images.track.height*camera.scale-screenSize.y, camera.position.y);
+
 		if (raceMode) {
 			car.driveTo(input.getMouseWorldPosition());
 			car.accelerating = input.leftMouseButtonDown;
 			car.sliding = input.rightMouseButtonDown;
 
-			camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
+			camera.position = car.position.mult(camera.scale).sub(screenSize.mult(.5));
 		}
 
 		for (piece in goldEntities)
@@ -155,8 +163,8 @@ class Game {
 		if (!raceMode) {
 			var track = getHoveredTrack();
 			if (track != null) {
-				// var bubblePosition = new Vector2(track.point.x-kha.Assets.images.trackBubble.width/2, track.point.y-kha.Assets.images.trackBubble.height);
-				var bubblePosition = input.getMouseScreenPosition().sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
+				var bubblePosition = camera.worldToView(track.point).sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
+				// var bubblePosition = input.getMouseScreenPosition().sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
 				g.font = kha.Assets.fonts.FredokaOne_Regular;
 				g.fontSize = 35;
 				g.drawImage(kha.Assets.images.trackBubble, bubblePosition.x, bubblePosition.y);

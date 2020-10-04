@@ -61,6 +61,8 @@ class PlayerCar extends Car {
             }else if (trackColor != col) {
                 // position = new Vector2();
             }
+        }else{
+            speed *= .98;
         }
 
         var movement = new Vector2(Math.cos(movementAngle-Math.PI) * speed * delta, Math.sin(movementAngle-Math.PI) * speed * delta);

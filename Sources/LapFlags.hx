@@ -24,7 +24,7 @@ class LapFlags implements Collider {
     public function getCollider() {
         var size = new Vector2(kha.Assets.images.flags.width, kha.Assets.images.flags.height);
         var shape = differ.shapes.Polygon.rectangle(position.x+size.x/2, position.y+size.y/2, size.x*5,size.y*5);
-        shape.rotation = angle;
+        shape.rotation = angle * 180 / Math.PI;
         return shape;
     }
 }

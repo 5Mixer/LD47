@@ -6,6 +6,7 @@ class UIPanel {
     var gold:Int;
     var user:String;
     var cars:Array<Car> = [];
+    public var width:Int = 300;
 
     public function new() {
 
@@ -21,7 +22,7 @@ class UIPanel {
     }
 
     public function render(g:kha.graphics2.Graphics) {
-        var panelSize = new Vector2(300, kha.Window.get(0).height);
+        var panelSize = new Vector2(width, kha.Window.get(0).height);
         var panelPosition = new Vector2(kha.Window.get(0).width-panelSize.x, 0);
         var margin = 20;
 
