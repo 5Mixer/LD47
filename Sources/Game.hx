@@ -19,6 +19,7 @@ class Game {
 	var trackFlags:LapFlags;
 
 	var cars:Array<Car> = [];
+	var garageCars:Array<CarStats> = [];
 	var goldEntities:Array<Gold> = [];
 	var raceFlags:Array<LapFlags> = [];
 
@@ -38,10 +39,17 @@ class Game {
 		world = new World();
 		this.user = user;
 
-		ui = new UIPanel(user);
+		camera = new Camera();
+		input = new Input(camera);
+
+		ui = new UIPanel(user,input);
 		ui.setGold(gold);
 		ui.setUser(user);
 		ui.setCars(cars);
+		ui.setGarageCars(garageCars);
+		ui.buyCar = function() {
+			garageCars.push(new CarStats(1,1,1,1,user));
+		}
 
 		for (flagLocation in world.flagLocations){
 			raceFlags.push(new LapFlags(flagLocation, getTrackAt(flagLocation).id));
@@ -51,8 +59,6 @@ class Game {
 		for (goldLocation in world.goldLocations)
 			goldEntities.push(new Gold(goldLocation));
 
-		camera = new Camera();
-		input = new Input(camera);
 		input.onRightDown = function() {
 			if (raceMode) {
 				car.movementAngle = car.angle;
@@ -64,10 +70,13 @@ class Game {
 			}
 		}
 		input.onLeftDown = function() {
-			if (!raceMode) {
+			if (!raceMode && !mouseInUI()) {
 				if (getHoveredTrack() != null) {
 					startRace(getHoveredTrack().id);
 				}
+			}
+			if (mouseInUI()) {
+				ui.click(input.getMouseScreenPosition());
 			}
 		}
 		input.onMouseMove = function(dx,dy) {
@@ -164,10 +173,10 @@ class Game {
 
 		for (piece in goldEntities)
 			piece.render(g);
-		for (car in cars)
-			car.render(g);
 		for (flag in raceFlags)
 			flag.render(g);
+		for (car in cars)
+			car.render(g);
 
 		camera.reset(g);
 		if (!raceMode) {

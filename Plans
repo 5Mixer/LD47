@@ -19,4 +19,4 @@
  # Todo
  - Auth/identity? - Ask for nickname and store session identifier in local storage
  - Enter/leave race track mode
- - Realtime mode
+ - Realtime mode (websockets)
