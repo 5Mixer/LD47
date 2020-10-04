@@ -8,9 +8,11 @@ class LapFlags implements Collider {
     public var position:Vector2 = new Vector2();
     public var projection:Vector2 = new Vector2();
     var angle = Math.PI/2;
+    public var trackId:String;
 
-    public function new(position:Vector2) {
+    public function new(position:Vector2, trackId:String) {
         this.position = position;
+        this.trackId = trackId;
     }
     public function render(g:Graphics) {
         var origin = new Vector2(kha.Assets.images.flags.width/2, kha.Assets.images.flags.height/2);

@@ -12,37 +12,58 @@ import kha.Scheduler;
 import kha.System;
 
 class Game {
+	var gold = 1000;
+
 	var car:PlayerCar;
+	var trackFlags:LapFlags;
+
 	var cars:Array<Car> = [];
-	var flags:LapFlags;
+	var goldEntities:Array<Gold> = [];
+	var raceFlags:Array<LapFlags> = [];
+
 	var camera:Camera;
 	var input:Input;
 	var lastTime:Float;
 	var world:World;
-	var gold:Array<Gold> = [];
-	var raceFlags:Array<LapFlags> = [];
 
+	var raceMode = false;
+	var raceTrackId = null;
 	var wasOnFlag = false;
 
 	public function new() {
-		car = new PlayerCar();
 		world = new World();
-		flags = new LapFlags(new Vector2());
 
 		for (flagLocation in world.flagLocations)
-			raceFlags.push(new LapFlags(flagLocation));
+			raceFlags.push(new LapFlags(flagLocation, getTrackAt(flagLocation).id));
 		
 		for (goldLocation in world.goldLocations)
-			gold.push(new Gold(goldLocation));
+			goldEntities.push(new Gold(goldLocation));
 
 		camera = new Camera();
 		input = new Input(camera);
 		input.onRightDown = function() {
-			car.movementAngle = car.angle;
+			if (raceMode) {
+				car.movementAngle = car.angle;
+			}
 		}
 		input.onRightUp = function() {
-			car.speed += 300;
+			if (raceMode) {
+				car.speed += 300;
+			}
 		}
+		input.onLeftUp = function() {
+			if (!raceMode) {
+				if (getHoveredTrack() != null) {
+					startRace(getHoveredTrack().id);
+				}
+			}
+		}
+		input.onMouseMove = function(dx,dy) {
+			if (!raceMode && input.middleMouseButtonDown) {
+				camera.position.x -= dx;
+				camera.position.y -= dy;
+			}
+		};
 		lastTime = Scheduler.realTime();
 
 		Http.request("localhost", "races", null, 3000, false, HttpMethod.Get, [], function (error, response, body){
@@ -76,25 +97,21 @@ class Game {
 	}
 	public function update(): Void {
 		var delta = Scheduler.realTime() - lastTime;
-		car.update(delta);
-		car.driveTo(input.getMouseWorldPosition());
-		car.accelerating = input.leftMouseButtonDown;
-		car.sliding = input.rightMouseButtonDown;
 
-		camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
+		if (raceMode) {
+			car.driveTo(input.getMouseWorldPosition());
+			car.accelerating = input.leftMouseButtonDown;
+			car.sliding = input.rightMouseButtonDown;
 
-		for (piece in gold)
+			camera.position = car.position.mult(camera.scale).sub(new Vector2(kha.Window.get(0).width/2, kha.Window.get(0).height/2));
+		}
+
+		for (piece in goldEntities)
 			piece.update(delta);
 		for (car in cars)
 			car.update(delta);
 
-		for (piece in gold)
-			if (piece.active)
-				if (piece.getCollider().testPolygon(car.getCollider()) != null){
-					piece.collect();
-				}
-
-		for (piece in gold)
+		for (piece in goldEntities)
 			if (piece.active)
 				for (car in cars)
 					if (piece.getCollider().testPolygon(car.getCollider()) != null){
@@ -103,52 +120,90 @@ class Game {
 
 		lastTime = Scheduler.realTime();
 
-		var touchingFlag = (SAT2D.testPolygonVsPolygon(car.getCollider(), flags.getCollider()) != null);
-		if (touchingFlag && !wasOnFlag) {
-			var frames = car.recording.stopRecording();
-			var newCar = new RecordCar(frames);
-			cars.push(newCar);
-
-			var req = new haxe.Http("http://localhost:3000/cars");
-			req.setPostBytes(car.recording.asBytes());
-			req.onData = function(s) trace(s);
-			req.onError = function(s) trace(s);
-			req.onStatus = function(s) trace(s);
-
-			req.request(true);
+		if (raceMode) {
+			var touchingFlag = (SAT2D.testPolygonVsPolygon(car.getCollider(), trackFlags.getCollider()) != null);
+			if (touchingFlag && !wasOnFlag) {
+				finishRace();
+			}
+			wasOnFlag = touchingFlag;
 		}
-		wasOnFlag = touchingFlag;
 	}
 
 	public function render(framebuffer: Framebuffer): Void {
 		var g = framebuffer.g2;
-		g.begin(kha.Color.fromBytes(84, 214, 118));
+		g.begin(true,kha.Color.fromBytes(118,207,124));
 		camera.transform(g);
-        g.drawImage(kha.Assets.images.track,0,0);
-		car.render(g);
+		g.color = kha.Color.White;
+		g.drawImage(kha.Assets.images.track,0,0);
 
-		for (piece in gold)
+		for (piece in goldEntities)
 			piece.render(g);
 		for (car in cars)
 			car.render(g);
 		for (flag in raceFlags)
 			flag.render(g);
 
-
-		for (lap in world.lapPolygons)
-			if (SAT2D.testCircleVsPolygon(new Circle(input.getMouseWorldPosition().x, input.getMouseWorldPosition().y,1),lap.polygon) != null){
+		camera.reset(g);
+		if (!raceMode) {
+			var track = getHoveredTrack();
+			if (track != null) {
+				// var bubblePosition = new Vector2(track.point.x-kha.Assets.images.trackBubble.width/2, track.point.y-kha.Assets.images.trackBubble.height);
+				var bubblePosition = input.getMouseScreenPosition().sub(new Vector2(kha.Assets.images.trackBubble.width/2, kha.Assets.images.trackBubble.height));
 				g.font = kha.Assets.fonts.FredokaOne_Regular;
 				g.fontSize = 35;
-				g.drawImage(kha.Assets.images.trackBubble, lap.point.x-kha.Assets.images.trackBubble.width/2, lap.point.y-kha.Assets.images.trackBubble.height);
+				g.drawImage(kha.Assets.images.trackBubble, bubblePosition.x, bubblePosition.y);
+
 				g.color = kha.Color.Black;
-				g.drawString("Track "+lap.lap, lap.point.x - kha.Assets.images.trackBubble.width/2, lap.point.y - kha.Assets.images.trackBubble.height);
+				var string = "Track "+track.id;
+				g.drawString(string, bubblePosition.x+kha.Assets.images.trackBubble.width/2-g.font.width(g.fontSize, string)/2, bubblePosition.y+5);
 				g.color = kha.Color.White;
 			}
-
-
-		flags.render(g);
-		camera.reset(g);
+		}
 
 		g.end();
+	}
+	function getHoveredTrack() {
+		return getTrackAt(input.getMouseWorldPosition());
+	}
+	function getTrackAt(point:Vector2) {
+		for (lap in world.lapPolygons)
+			if (SAT2D.testCircleVsPolygon(new Circle(point.x,point.y,1),lap.polygon) != null){
+				return lap;
+			}
+
+		return null;
+	}
+	function startRace(trackId:String) {
+		raceMode = true;
+		raceTrackId = getHoveredTrack().id;
+		car = new PlayerCar();
+		cars.push(car);
+		for (flag in raceFlags) {
+			if (flag.trackId == raceTrackId) {
+				trackFlags = flag;
+				break;
+			}
+		}
+		car.position = trackFlags.position;
+		wasOnFlag = true;
+	}
+	function finishRace() {
+		var frames = car.recording.stopRecording();
+		var newCar = new RecordCar(frames);
+		cars.push(newCar);
+
+		var req = new haxe.Http("http://localhost:3000/cars");
+		req.setPostBytes(car.recording.asBytes());
+		req.onData = function(s) trace(s);
+		req.onError = function(s) trace(s);
+		req.onStatus = function(s) trace(s);
+
+		req.request(true);
+
+		raceMode = false;
+		raceTrackId = null;
+		cars.remove(car);
+		car = null;
+		trackFlags = null;
 	}
 }

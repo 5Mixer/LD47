@@ -9,7 +9,7 @@ class PlayerCar extends Car {
     var acceleration = 1;
     var deceleration = 1;
     var minSpeed = 10.;
-    var maxSpeed = 140.;
+    var maxSpeed = 100.;
     var maxAngleDelta = 5*Math.PI/180;
     public var accelerating = false;
     public var sliding = false;
@@ -66,7 +66,7 @@ class PlayerCar extends Car {
             if (trackColor == null) {
                 trackColor = col;
             }else if (trackColor != col) {
-                position = new Vector2();
+                // position = new Vector2();
             }
         }
 

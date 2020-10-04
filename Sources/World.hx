@@ -6,7 +6,7 @@ import kha.math.Vector2;
 class World {
     public var goldLocations:Array<Vector2> = [];
     public var flagLocations:Array<Vector2> = [];
-    public var lapPolygons:Array<{lap:String,point:Vector2, polygon:differ.shapes.Polygon}> = [];
+    public var lapPolygons:Array<{id:String,point:Vector2, polygon:differ.shapes.Polygon}> = [];
     public function new() {
         var data = haxe.xml.Parser.parse(kha.Assets.blobs.map_tmx.toString());
         var map = data.elementsNamed("map").next();
@@ -31,7 +31,7 @@ class World {
                     }
                     midpoint = midpoint.div(vertices.length);
                     lapPolygons.push({
-                        lap: object.elementsNamed("properties").next().elements().next().get("value"),
+                        id: object.elementsNamed("properties").next().elements().next().get("value"),
                         point: midpoint,
                         polygon: new Polygon(0, 0, vertices)
                     });

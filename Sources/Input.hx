@@ -13,11 +13,13 @@ class Input {
     public var rightMouseButtonDown = false;
     public var onRightDown:()->Void;
     public var onRightUp:()->Void;
+    public var onLeftUp:()->Void;
+    public var onMouseMove:(Int,Int)->Void;
 
     public function new(camera) {
         this.camera = camera;
         
-        Mouse.get().notify(onMouseDown, onMouseUp, onMouseMove, onMouseWheel);
+        Mouse.get().notify(onMouseDown, onMouseUp, mouseMoveHandler, onMouseWheel);
 
         mousePosition = new Vector2();
     }
@@ -39,8 +41,10 @@ class Input {
         mousePosition.x = x;
         mousePosition.y = y;
         
-        if (button == 0)
+        if (button == 0){
             leftMouseButtonDown = false;
+            onLeftUp();
+        }
         if (button == 1) {
             rightMouseButtonDown = false;
             onRightUp();
@@ -48,9 +52,10 @@ class Input {
         if (button == 2)
             middleMouseButtonDown = false;
     }
-    function onMouseMove(x:Int, y:Int, dx:Int, dy:Int) {
+    function mouseMoveHandler(x:Int, y:Int, dx:Int, dy:Int) {
         mousePosition.x = x;
         mousePosition.y = y;
+        onMouseMove(dx,dy);
     }
     function onMouseWheel(delta:Int) {
         camera.zoomOn(getMouseScreenPosition(), delta);

@@ -15,8 +15,7 @@ class Main {
                 menu.onPlay = function(username) {
                     user = username;
                 };
-				// Avoid passing update/render directly,
-				// so replacing them via code injection works
+
 				Scheduler.addTimeTask(function () {
                     if (user == null) {
                         menu.update();

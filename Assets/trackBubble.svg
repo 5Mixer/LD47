@@ -69,7 +69,7 @@
      transform="translate(-1.8902951,9.7893867)">
     <path
        id="rect2266"
-       style="fill:#dad264;fill-opacity:0.53050333;stroke:none;stroke-width:31.2376;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers stroke fill"
+       style="fill:#da7c64;fill-opacity:1;stroke:none;stroke-width:31.2376;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:markers stroke fill"
        d="M 12.25 0 C 5.4633919 0 0 5.4633907 0 12.25 L 0 97.482422 C -2.3684758e-15 104.26903 5.4633919 109.73242 12.25 109.73242 L 68.339844 109.73242 C 69.375375 115.71907 71.532597 124.01279 72.775391 125.57031 C 74.582999 127.83569 89.965117 135.23909 92.863281 135.23828 C 95.761446 135.23748 111.14092 127.82693 112.94727 125.56055 C 114.18824 124.00353 116.33792 115.71867 117.37109 109.73242 L 173.46094 109.73242 C 180.24755 109.73242 185.71094 104.26903 185.71094 97.482422 L 185.71094 12.25 C 185.71094 5.4633907 180.24755 0 173.46094 0 L 12.25 0 z "
        transform="matrix(0.26458333,0,0,0.26458333,1.8902951,-9.7893867)" />
     <rect
