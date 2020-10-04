@@ -25,9 +25,10 @@ class UIPanel {
     var input:Input;
 
     var carPendingTrackSelection:CarStats = null;
-    pt
 
     public static var width:Int = 300;
+
+    var upgradeCosts = [100, 300, 500, 1000, 2000];
 
     public function new(garageUser, input) {
         this.garageUser = garageUser;
@@ -118,9 +119,30 @@ class UIPanel {
             drawStat(g, panelPosition.x + panelSize.x - margin - (8+5)*4, y, car.boost);
             y += g.fontSize + margin;
             
-            y = drawButton(g, "+Speed", panelPosition.x+margin, y, buyCar);
-            y = drawButton(g, "+Acceleration", panelPosition.x+margin, y, buyCar);
-            y = drawButton(g, "+Boost", panelPosition.x+margin, y, buyCar);
+            if (car.speed < 5)
+                y = drawButton(g, '+Speed [$$${upgradeCosts[car.speed]}]', panelPosition.x+margin, y, function() {
+                    if (car.speed < 5) {
+                        gold -= upgradeCosts[car.speed];
+                        car.speed++;
+                    }
+                });
+            
+            if (car.acceleration < 5)
+                y = drawButton(g, '+Acceleration [$$${upgradeCosts[car.acceleration]}]', panelPosition.x+margin, y, function() {
+                    if (car.acceleration < 5) {
+                        gold -= upgradeCosts[car.acceleration];
+                        car.acceleration++;
+                    }
+                });
+            
+            if (car.boost < 5)
+                y = drawButton(g, '+Boost [$$${upgradeCosts[car.boost]}]', panelPosition.x+margin, y, function() {
+                    if (car.boost < 5) {
+                        gold -= upgradeCosts[car.boost];
+                        car.boost++;
+                    }
+                });
+
             y = drawButton(g, carPendingTrackSelection == car ? "Choose track" : "Race Car", panelPosition.x+margin, y, function() {
                 if (carPendingTrackSelection == car) {
                     carPendingTrackSelection = null; // Cancel track selection
