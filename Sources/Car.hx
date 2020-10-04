@@ -4,15 +4,44 @@ import kha.math.Vector2;
 import kha.math.FastMatrix3;
 import kha.graphics2.Graphics;
 
+class CarStats {
+    public var speed:Int;
+    public var acceleration:Int;
+    public var boost:Int;
+    public var profits:Int;
+
+    public var owner:String;
+    public function new(speed, acceleration, boost, profits) {
+        this.speed = speed;
+        this.acceleration = acceleration;
+        this.boost = boost;
+        this.profits = profits;
+    }
+}
+
 class Car implements Collider {
     public var position:Vector2 = new Vector2();
     var origin:Vector2;
     public var angle:Float;
-    var player = false;
 
-    public function new(player=true) {
+    var owner:String;
+
+    var maxAngleDelta = 5*Math.PI/180;
+
+    public var meta:CarStats;
+
+    public function new(meta) {
         position = new Vector2(50,50);
-        this.player = player;
+        this.meta = meta;
+    }
+    function getMaxSpeed() {
+        return 50 + meta.speed * 25;
+    }
+    function getAcceleration() {
+        return .75 + meta.acceleration * .25;
+    }
+    function getBoost() {
+        return meta.boost;
     }
 
     public function getCollider() {

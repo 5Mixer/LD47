@@ -6,8 +6,8 @@ class RecordCar extends Car {
     var startLapTime = 0.;
     var frameIndex = 0;
     var frames:Array<CarFrame>;
-    public function new (frames:Array<CarFrame>) {
-        super(false);
+    public function new (meta,frames:Array<CarFrame>) {
+        super(meta);
         startLapTime = Scheduler.realTime();
         this.frames = frames;
     }

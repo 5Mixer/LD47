@@ -6,11 +6,6 @@ import kha.math.Vector2;
 class PlayerCar extends Car {
 
     public var speed = 1.;
-    var acceleration = 1;
-    var deceleration = 1;
-    var minSpeed = 10.;
-    var maxSpeed = 100.;
-    var maxAngleDelta = 5*Math.PI/180;
     public var accelerating = false;
     public var sliding = false;
 
@@ -22,24 +17,22 @@ class PlayerCar extends Car {
     public var recording:Recording = new Recording();
 
     override public function update(delta:Float) {
-        if (player) {
-            if (angle > Math.PI) angle -= 2*Math.PI;
-            else if (angle < -Math.PI) angle += 2*Math.PI;
+        if (angle > Math.PI) angle -= 2*Math.PI;
+        else if (angle < -Math.PI) angle += 2*Math.PI;
 
-            recording.record(new CarFrame(Math.round(position.x*1000),Math.round(position.y*1000), Math.round(angle*180/Math.PI), Math.round(((Scheduler.realTime()-recording.recordingStartTime)*10000))));
-        }
+        recording.record(new CarFrame(Math.round(position.x*1000),Math.round(position.y*1000), Math.round(angle*180/Math.PI), Math.round(((Scheduler.realTime()-recording.recordingStartTime)*10000))));
 
         if (accelerating) {
-            speed += acceleration;
+            speed += getAcceleration();
         }else{
-            speed -= deceleration;
+            speed -= getAcceleration();
         }
-        speed = Math.max(minSpeed, speed);
-        if (speed > maxSpeed) {
-            speed = speed *.95 + maxSpeed * .05;
+        speed = Math.max(0, speed);
+        if (speed > getMaxSpeed()) {
+            speed = speed *.95 + getMaxSpeed() * .05;
         }
 
-        maxAngleDelta = (5*Math.PI/180) - (speed/maxSpeed) * (2 * Math.PI/180);
+        maxAngleDelta = (5*Math.PI/180) - (speed/getMaxSpeed()) * (2 * Math.PI/180);
 
         if (sliding) {
             slidingFactor = 1;

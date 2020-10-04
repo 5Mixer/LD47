@@ -1,5 +1,6 @@
 package;
 
+import Car.CarStats;
 import differ.shapes.Circle;
 import kha.network.HttpMethod;
 import haxe.Json;
@@ -30,8 +31,14 @@ class Game {
 	var raceTrackId = null;
 	var wasOnFlag = false;
 
-	public function new() {
+	var ui:UIPanel;
+
+	public function new(user) {
 		world = new World();
+
+		ui = new UIPanel();
+		ui.setGold(gold);
+		ui.setUser(user);
 
 		for (flagLocation in world.flagLocations)
 			raceFlags.push(new LapFlags(flagLocation, getTrackAt(flagLocation).id));
@@ -83,7 +90,8 @@ class Game {
 					for (i in 0...Std.int(data.length/frameSize)) {
 						frames.push(new CarFrame(data.getInt32(i*frameSize), data.getInt32(i*frameSize+4), data.getInt32(i*frameSize+8), data.getInt32(i*frameSize+12)));
 					}
-					cars.push(new RecordCar(frames));
+					var meta = new CarStats(1,1,1,1);
+					cars.push(new RecordCar(meta, frames));
 				};
 				req.onError = function(s) trace(s);
 				req.onStatus = function(s) {
@@ -160,6 +168,8 @@ class Game {
 			}
 		}
 
+		ui.render(g);
+
 		g.end();
 	}
 	function getHoveredTrack() {
@@ -176,7 +186,8 @@ class Game {
 	function startRace(trackId:String) {
 		raceMode = true;
 		raceTrackId = getHoveredTrack().id;
-		car = new PlayerCar();
+		var meta = new CarStats(1,1,1,1);
+		car = new PlayerCar(meta);
 		cars.push(car);
 		for (flag in raceFlags) {
 			if (flag.trackId == raceTrackId) {
@@ -189,7 +200,7 @@ class Game {
 	}
 	function finishRace() {
 		var frames = car.recording.stopRecording();
-		var newCar = new RecordCar(frames);
+		var newCar = new RecordCar(car.meta, frames);
 		cars.push(newCar);
 
 		var req = new haxe.Http("http://localhost:3000/cars");
