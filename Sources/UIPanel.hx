@@ -8,7 +8,7 @@ import kha.math.Vector2;
 class UIPanel {
     public var buyCar:()->Void;
 
-    var gold:Int;
+    public var gold:Int = 1000;
     var user:String;
     var cars:Array<Car> = [];
     var garageCars:Array<CarStats> = [];
@@ -33,9 +33,6 @@ class UIPanel {
     public function new(garageUser, input) {
         this.garageUser = garageUser;
         this.input = input;
-    }
-    public function setGold(gold:Int) {
-        this.gold = gold;
     }
     public function setUser(user:String) {
         this.user = user;
@@ -120,7 +117,7 @@ class UIPanel {
             y += g.fontSize + margin;
             
             if (car.speed < 5)
-                y = drawButton(g, '+Speed [$$${upgradeCosts[car.speed]}]', panelPosition.x+margin, y, function() {
+                y = drawButton(g, '+Speed [$$${upgradeCosts[car.speed]}]', panelPosition.x+margin, y, gold >= upgradeCosts[car.speed], function() {
                     if (car.speed < 5) {
                         gold -= upgradeCosts[car.speed];
                         car.speed++;
@@ -128,7 +125,7 @@ class UIPanel {
                 });
             
             if (car.acceleration < 5)
-                y = drawButton(g, '+Acceleration [$$${upgradeCosts[car.acceleration]}]', panelPosition.x+margin, y, function() {
+                y = drawButton(g, '+Acceleration [$$${upgradeCosts[car.acceleration]}]', panelPosition.x+margin, y, gold >= upgradeCosts[car.acceleration], function() {
                     if (car.acceleration < 5) {
                         gold -= upgradeCosts[car.acceleration];
                         car.acceleration++;
@@ -136,14 +133,14 @@ class UIPanel {
                 });
             
             if (car.boost < 5)
-                y = drawButton(g, '+Boost [$$${upgradeCosts[car.boost]}]', panelPosition.x+margin, y, function() {
+                y = drawButton(g, '+Boost [$$${upgradeCosts[car.boost]}]', panelPosition.x+margin, y, gold >= upgradeCosts[car.boost], function() {
                     if (car.boost < 5) {
                         gold -= upgradeCosts[car.boost];
                         car.boost++;
                     }
                 });
 
-            y = drawButton(g, carPendingTrackSelection == car ? "Choose track" : "Race Car", panelPosition.x+margin, y, function() {
+            y = drawButton(g, carPendingTrackSelection == car ? "Choose track" : "Race Car", panelPosition.x+margin, y, true, function() {
                 if (carPendingTrackSelection == car) {
                     carPendingTrackSelection = null; // Cancel track selection
                 }else{
@@ -155,7 +152,7 @@ class UIPanel {
         }
 
         if (ownedCars < 10) {
-            y = drawButton(g, "Buy Car -$4000", panelPosition.x+margin, y, buyCar);
+            y = drawButton(g, "Buy Car [$1000]", panelPosition.x+margin, y, gold>=1000, buyCar);
             y += margin;
         }
 
@@ -173,7 +170,7 @@ class UIPanel {
         }
         g.color = kha.Color.White;
     }
-    function drawButton(g:Graphics, string, x, y, onClick:()->Void) {
+    function drawButton(g:Graphics, string, x, y, valid, onClick:()->Void) {
         var hovering = false;
         var mousePos = input.getMouseScreenPosition();
         if (mousePos.x > panelPosition.x+margin && mousePos.x < panelPosition.x+margin+kha.Assets.images.button.width &&
@@ -181,14 +178,17 @@ class UIPanel {
                 hovering = true;
             }
 
-        g.color = hovering ? kha.Color.fromBytes(241, 172, 107) : kha.Color.fromBytes(218, 124, 100);
+        if (valid)
+            g.color = hovering ? kha.Color.fromBytes(241, 172, 107) : kha.Color.fromBytes(218, 124, 100);
+        else
+            g.color = kha.Color.fromBytes(170,170,170);
 
         g.drawImage(kha.Assets.images.button, panelPosition.x + margin, y);
         g.color = textColour;
         g.fontSize = 30;
         g.drawString(string, x + kha.Assets.images.button.width/2 - g.font.width(g.fontSize,string)/2, y+5);
 
-        if (clickPosition == null)
+        if (clickPosition == null || !valid)
             return y + 50;
 
         if (clickPosition.x > panelPosition.x+margin && clickPosition.x < panelPosition.x+margin+kha.Assets.images.button.width &&

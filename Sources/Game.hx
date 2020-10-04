@@ -13,8 +13,6 @@ import kha.Scheduler;
 import kha.System;
 
 class Game {
-	var gold = 1000;
-
 	var car:PlayerCar;
 	var trackFlags:LapFlags;
 
@@ -47,11 +45,11 @@ class Game {
 		mouseCollider = new differ.shapes.Circle(0,0,1);
 
 		ui = new UIPanel(user,input);
-		ui.setGold(gold);
 		ui.setUser(user);
 		ui.setCars(cars);
 		ui.setGarageCars(garageCars);
 		ui.buyCar = function() {
+			ui.gold -= 1000;
 			garageCars.push(new CarStats(1,1,1,1,user));
 		}
 
