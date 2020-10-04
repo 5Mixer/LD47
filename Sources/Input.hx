@@ -15,6 +15,7 @@ class Input {
     public var onRightUp:()->Void;
     public var onLeftDown:()->Void;
     public var onMouseMove:(Int,Int)->Void;
+    public var onScroll:(Int)->Void;
 
     public function new(camera) {
         this.camera = camera;
@@ -59,7 +60,7 @@ class Input {
         onMouseMove(dx,dy);
     }
     function onMouseWheel(delta:Int) {
-        camera.zoomOn(getMouseScreenPosition(), delta);
+        onScroll(delta);
     }
     
     public function getMouseWorldPosition():kha.math.Vector2 {

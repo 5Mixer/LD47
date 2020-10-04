@@ -32,13 +32,16 @@ class Game {
 	var wasOnFlag = false;
 
 	var ui:UIPanel;
+	var user:String;
 
 	public function new(user) {
 		world = new World();
+		this.user = user;
 
-		ui = new UIPanel();
+		ui = new UIPanel(user);
 		ui.setGold(gold);
 		ui.setUser(user);
+		ui.setCars(cars);
 
 		for (flagLocation in world.flagLocations){
 			raceFlags.push(new LapFlags(flagLocation, getTrackAt(flagLocation).id));
@@ -73,6 +76,13 @@ class Game {
 				camera.position.y -= dy;
 			}
 		};
+		input.onScroll = function(delta) {
+			if (mouseInUI()) {
+				ui.scroll(delta);
+			}else{
+				camera.zoomOn(input.getMouseScreenPosition(), delta);
+			}
+		}
 		lastTime = Scheduler.realTime();
 
 		Http.request("localhost", "races", null, 3000, false, HttpMethod.Get, [], function (error, response, body){
@@ -92,7 +102,7 @@ class Game {
 					for (i in 0...Std.int(data.length/frameSize)) {
 						frames.push(new CarFrame(data.getInt32(i*frameSize), data.getInt32(i*frameSize+4), data.getInt32(i*frameSize+8), data.getInt32(i*frameSize+12)));
 					}
-					var meta = new CarStats(1,1,1,1);
+					var meta = new CarStats(1,1,1,1, "OTHER");
 					cars.push(new RecordCar(meta, frames));
 				};
 				req.onError = function(s) trace(s);
@@ -111,7 +121,7 @@ class Game {
 		var screenSize = new Vector2(kha.Window.get(0).width, kha.Window.get(0).height);
 		camera.position.x = Math.max(0, camera.position.x);
 		camera.position.y = Math.max(-200, camera.position.y); // Hardcode extra space for upper race bubbles
-		camera.position.x = Math.min(kha.Assets.images.track.width*camera.scale-(screenSize.x-ui.width), camera.position.x);
+		camera.position.x = Math.min(kha.Assets.images.track.width*camera.scale-(screenSize.x-UIPanel.width), camera.position.x);
 		camera.position.y = Math.min(kha.Assets.images.track.height*camera.scale-screenSize.y, camera.position.y);
 
 		if (raceMode) {
@@ -176,7 +186,9 @@ class Game {
 			}
 		}
 
-		ui.render(g);
+		if (!raceMode) {
+			ui.render(g);
+		}
 
 		g.end();
 	}
@@ -194,7 +206,7 @@ class Game {
 	function startRace(trackId:String) {
 		raceMode = true;
 		raceTrackId = getHoveredTrack().id;
-		var meta = new CarStats(1,1,1,1);
+		var meta = new CarStats(1,1,1,1,user);
 		car = new PlayerCar(meta);
 		cars.push(car);
 		for (flag in raceFlags) {
@@ -224,5 +236,8 @@ class Game {
 		cars.remove(car);
 		car = null;
 		trackFlags = null;
+	}
+	function mouseInUI() {
+		return !raceMode && input.getMouseScreenPosition().x >= kha.Window.get(0).width-UIPanel.width;
 	}
 }

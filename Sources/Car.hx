@@ -11,11 +11,12 @@ class CarStats {
     public var profits:Int;
 
     public var owner:String;
-    public function new(speed, acceleration, boost, profits) {
+    public function new(speed, acceleration, boost, profits, owner) {
         this.speed = speed;
         this.acceleration = acceleration;
         this.boost = boost;
         this.profits = profits;
+        this.owner = owner;
     }
 }
 
